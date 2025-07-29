@@ -7,7 +7,19 @@ const { JWT } = require('google-auth-library');
 const creds = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
 const SHEET_ID = '1qL3Vw5dDvHlXTXPohfnUAOT9Ua7DtBzcMzPfv1uQl2M';
 
-const client = new Client({ authStrategy: new LocalAuth() });
+const client = new Client({
+  authStrategy: new LocalAuth(), puppeteer: {
+    headless: true, args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-accelerated-2d-canvas',
+      '--no-first-run',
+      '--no-zygote',
+      '--disable-gpu'
+    ]
+  }
+});
 
 // schedule.scheduleJob('59 23 * * *', async function () {
 //   const resumo = await gerarResumoDoDia();
@@ -31,7 +43,7 @@ async function adicionarLinha(dados) {
 
   const sheet = doc.sheetsByIndex[0];
   console.log(sheet.title);
-  
+
   await sheet.addRow(dados);
 }
 
@@ -45,18 +57,18 @@ client.once('ready', () => {
 });
 
 client.on('message_create', async (msg) => {
-    const text = msg.body.toLowerCase();
-    const regex = /^(\d*[\.|\,]?\d+)\s(\w*)\s(pix|dinheiro|cc|vr|va)$/;
-    const match = text.match(regex);
+  const text = msg.body.toLowerCase();
+  const regex = /^(\d*[\.|\,]?\d+)\s(\w*)\s(pix|dinheiro|cc|vr|va)$/;
+  const match = text.match(regex);
 
-    if (match) {
-      console.log('Match', match);
-      const [_, valor, descricao, metodo] = match;
-      const data = new Date().toLocaleString();
-      // Aqui você pode chamar a função para adicionar a linha no Google Sheets
-      await adicionarLinha({ data, valor, descricao, metodo });
-      console.log(`Dados armazenados: ${data}, ${valor}, ${descricao}, ${metodo}`);
-    }
+  if (match) {
+    console.log('Match', match);
+    const [_, valor, descricao, metodo] = match;
+    const data = new Date().toLocaleString();
+    // Aqui você pode chamar a função para adicionar a linha no Google Sheets
+    await adicionarLinha({ data, valor, descricao, metodo });
+    console.log(`Dados armazenados: ${data}, ${valor}, ${descricao}, ${metodo}`);
+  }
 });
 
 client.initialize();
