@@ -1,10 +1,11 @@
+require('dotenv').config();
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 // const schedule = require('node-schedule');
 const qrcode = require('qrcode-terminal');
 const { JWT } = require('google-auth-library');
 const creds = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
-const SHEET_ID = '1qL3Vw5dDvHlXTXPohfnUAOT9Ua7DtBzcMzPfv1uQl2M'; 
+const SHEET_ID = '1qL3Vw5dDvHlXTXPohfnUAOT9Ua7DtBzcMzPfv1uQl2M';
 
 const client = new Client({ authStrategy: new LocalAuth() });
 
