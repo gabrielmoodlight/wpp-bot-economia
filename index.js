@@ -7,6 +7,10 @@ const { JWT } = require('google-auth-library');
 const creds = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
 const SHEET_ID = '1qL3Vw5dDvHlXTXPohfnUAOT9Ua7DtBzcMzPfv1uQl2M';
 
+const browser = await puppeteer.launch({
+  enableExtensions: true,
+});
+
 const client = new Client({
   authStrategy: new LocalAuth(), puppeteer: {
     headless: true, args: [
